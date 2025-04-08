@@ -1,12 +1,11 @@
 package autoComplete;
 
-import org.junit.jupiter.api.*;
+import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.ArrayList;
+import org.junit.jupiter.api.Test;
 
 /**
  * Class to test the tree implementation
@@ -71,6 +70,7 @@ public class TestPrefixTree {
         assertTrue(result.contains("pot"));
         assertTrue(result.contains("pottery"));
         assertTrue(result.contains("potato"));
+        
         
         result = tree.getWordsForPrefix("mu");
         assertEquals(3, result.size());
