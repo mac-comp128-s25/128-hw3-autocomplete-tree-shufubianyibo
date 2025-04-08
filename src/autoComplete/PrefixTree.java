@@ -1,6 +1,7 @@
 package autoComplete;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -24,7 +25,30 @@ public class PrefixTree {
      * @param word
      */
     public void add(String word){
-        //TODO: complete me
+        if (contains(word)) {
+            // Do nothing
+        } else {
+            TreeNode current = root;
+            for (int i=0; i < word.length(); i++){
+                if (current.children.containsKey(word.charAt(i))){
+                    current = current.children.get(word.charAt(i));
+                    if (i == word.length()-1){
+                        current.isWord = true;
+                        size++;
+                    }
+                } else {
+                    TreeNode newNode = new TreeNode();
+                    newNode.letter = word.charAt(i);
+                    current.children.put(word.charAt(i), newNode);
+                    current = newNode;
+                    if (i == word.length()-1){
+                        newNode.isWord = true;
+                        size++;
+                    }
+
+                }
+            }
+        }
     }
 
     /**
@@ -33,8 +57,16 @@ public class PrefixTree {
      * @return true if contained in the tree.
      */
     public boolean contains(String word){
-        //TODO: complete me
-        return false;
+        TreeNode current = root; 
+        for (int i = 0; i < word.length(); i++) {
+            char c = word.charAt(i);
+            if (!current.children.containsKey(c)) {
+                return false; 
+            }
+            current = current.children.get(c); 
+        }
+        return current.isWord; 
+
     }
 
     /**
@@ -44,8 +76,35 @@ public class PrefixTree {
      * @return list of words with prefix
      */
     public ArrayList<String> getWordsForPrefix(String prefix){
-        //TODO: complete me
-        return null;
+        TreeNode current = root; 
+        for (int i = 0; i < prefix.length(); i++) {
+            char c = prefix.charAt(i);
+            if (!current.children.containsKey(c)) {
+                return new ArrayList<>(); 
+            }
+            current = current.children.get(c); 
+        }
+
+        ArrayList<String> result = new ArrayList<>();
+        collectWords(current, new StringBuilder(prefix), result);
+        return result;
+    }
+
+    /**
+     * Helper method to collect all words in the tree starting from the given node.
+     * @param node
+     * @param prefix
+     * @param result
+     */
+    private void collectWords(TreeNode node, StringBuilder prefix, List<String> result) {
+        if (node.isWord) {
+            result.add(prefix.toString()); 
+        }
+        for (Map.Entry<Character, TreeNode> entry : node.children.entrySet()) {
+            prefix.append(entry.getKey()); 
+            collectWords(entry.getValue(), prefix, result); 
+            prefix.deleteCharAt(prefix.length() - 1); 
+        }
     }
 
     /**
